@@ -50,7 +50,11 @@ function scriptRequest(url, onSuccess, onError) {
 
 function then(data) {
     // alert( "Загружен пользователь " + data.name );
-    console.log(data);
+    console.log(data[3]);
+    $('#wikiLinksList').html('');
+    data[3].forEach(function(el){
+      $('<li><a href="'+ el +'">'+ el +'</a></li> ').appendTo('#wikiLinksList');
+    });
 }
 
 function fail(url) {
@@ -63,8 +67,16 @@ function fail(url) {
 // Внимание! Ответы могут приходить в любой последовательности!
 $('#form').on('submit', function(event){
     event.preventDefault();
+    var street = $('#street').val();
     var city = $('#city').val();
     var url = "http://en.wikipedia.org/w/api.php?action=opensearch&search="+ city +"&format=json&callback=wikiCallback";
     scriptRequest(url, then, fail);
-});
 
+    $('.bgimg').remove();
+    var imgUrl = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location="+street+","+city+"&fov=90&heading=235&pitch=10&key=AIzaSyDjtLw5yo7aKUeb5ogH-ZqOj1ejSeIxMJc";
+    $('<img>').attr({
+      alt: "",
+      class: "bgimg",
+      src: imgUrl
+    }).appendTo('body');
+});
