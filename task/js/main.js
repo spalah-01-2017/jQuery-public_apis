@@ -16,7 +16,7 @@ function scriptRequest(url, onSuccess, onError) {
     CallbackRegistry[callbackName] = function(data) {
         scriptOk = true; // обработчик вызвался, указать что всё ок
         delete CallbackRegistry[callbackName]; // можно очистить реестр
-        onSuccess(data); // и вызвать onSuccess
+        onSuccess(data, url); // и вызвать onSuccess
     };
 
     // эта функция сработает при любом результате запроса
@@ -48,13 +48,14 @@ function scriptRequest(url, onSuccess, onError) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-function then(data) {
+function then(data, url) {
     // alert( "Загружен пользователь " + data.name );
-    console.log(data[3]);
     $('#wikiLinksList').html('');
     data[3].forEach(function(el){
-      $('<li><a href="'+ el +'">'+ el +'</a></li> ').appendTo('#wikiLinksList');
+      $('<li><a href="'+ el +'">'+ el +'</a></li>').appendTo('#wikiLinksList');
     });
+
+    $("script[src='"+ url +"']").remove();
 }
 
 function fail(url) {
@@ -73,10 +74,11 @@ $('#form').on('submit', function(event){
     scriptRequest(url, then, fail);
 
     $('.bgimg').remove();
-    var imgUrl = "https://maps.googleapis.com/maps/api/streetview?size=400x400&location="+street+","+city+"&fov=90&heading=235&pitch=10&key=AIzaSyDjtLw5yo7aKUeb5ogH-ZqOj1ejSeIxMJc";
+    var imgUrl = "https://maps.googleapis.com/maps/api/streetview?size=900x900&location="+street+","+city+"&fov=90&heading=235&pitch=10&key=AIzaSyDjtLw5yo7aKUeb5ogH-ZqOj1ejSeIxMJc";
     $('<img>').attr({
       alt: "",
       class: "bgimg",
       src: imgUrl
     }).appendTo('body');
 });
+
